@@ -30,7 +30,7 @@ try {
 
 
     // deposit +150 
-    pl('Doing transaction deposit (+150) with current balance ' . $bankAccount1->getBalance());
+    pl('Doing transaction deposit(+150) with current balance ' . $bankAccount1->getBalance());
 
     pl('My new balance after deposit (+150) : ' . $bankAccount1->getBalance());
 
