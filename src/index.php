@@ -27,24 +27,30 @@ try {
     $bankAccount1 = new BankAccount(200, true, 0); //status true para open, false para closed
     //echo "show balance account: " . $bankAccount1->getBalance();
 
+
     // close account
     $bankAccount1->closeAccount();
+
 
     // reopen account
     $bankAccount1->reopenAccount();
 
+
     // deposit +150 
     pl('Doing transaction deposit (+150) with current balance ' . $bankAccount1->getBalance());
     
-    $bankAccount1->transaction(new DepositTransaction());
+    $bankAccount1->transaction(new DepositTransaction(150));
 
     pl('My new balance after deposit (+150) : ' . $bankAccount1->getBalance());
+
 
     // withdrawal -25
     pl('Doing transaction withdrawal (-25) with current balance ' . $bankAccount1->getBalance());
 
+
     pl('My new balance after withdrawal (-25) : ' . $bankAccount1->getBalance());
 
+    
     // withdrawal -600
     pl('Doing transaction withdrawal (-600) with current balance ' . $bankAccount1->getBalance());
 

@@ -32,8 +32,8 @@ class BankAccount implements BackAccountInterface
     }
 
 
-    public function transaction(BankTransactionInterface $transaction) {
-
+    public function transaction(BankTransactionInterface $transaction) { //le pasamos como parametro un obj DepositTransaction o WithdrawTransaction
+        $this->balance = $transaction->applyTransaction($this); //devuelve el balance final
     }
 
 
