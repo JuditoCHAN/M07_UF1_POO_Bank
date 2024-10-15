@@ -27,9 +27,7 @@ interface BackAccountInterface
 
    public function getBalance ();
 
-//    public function getOverdraft();
-
-//    public function getOverdraft(OverdraftInterface $overdraft);
+   public function getOverdraft();
 
    public function applyOverdraft(OverdraftInterface $overdraft);
 

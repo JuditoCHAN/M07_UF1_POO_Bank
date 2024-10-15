@@ -14,6 +14,7 @@ use ComBank\Transactions\WithdrawTransaction;
 use ComBank\Exceptions\BankAccountException;
 use ComBank\Exceptions\FailedTransactionException;
 use ComBank\Exceptions\ZeroAmountException;
+use ComBank\OverdraftStrategy\NoOverdraft;
 
 require_once 'bootstrap.php';
 
@@ -24,7 +25,7 @@ pl('--------- [Start testing bank account #1, No overdraft] --------');
 try {
     
     // show balance account
-    $bankAccount1 = new BankAccount(200, true, 0); //status true para open, false para closed
+    $bankAccount1 = new BankAccount(200, new NoOverdraft()); //al crearla pone el atributo status a true (==open)
     //echo "show balance account: " . $bankAccount1->getBalance();
 
 
@@ -38,14 +39,13 @@ try {
 
     // deposit +150 
     pl('Doing transaction deposit (+150) with current balance ' . $bankAccount1->getBalance());
-    
     $bankAccount1->transaction(new DepositTransaction(150));
-
     pl('My new balance after deposit (+150) : ' . $bankAccount1->getBalance());
 
 
     // withdrawal -25
     pl('Doing transaction withdrawal (-25) with current balance ' . $bankAccount1->getBalance());
+    $bankAccount1->transaction(new WithdrawTransaction(25));
 
 
     pl('My new balance after withdrawal (-25) : ' . $bankAccount1->getBalance());
@@ -53,6 +53,7 @@ try {
     
     // withdrawal -600
     pl('Doing transaction withdrawal (-600) with current balance ' . $bankAccount1->getBalance());
+    $bankAccount1->transaction(new WithdrawTransaction(600));
 
 } catch (ZeroAmountException $e) {
     pl($e->getMessage());

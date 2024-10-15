@@ -25,7 +25,7 @@ class BankAccount implements BackAccountInterface
     private $overdraft;
 
 
-    public function __construct($balance, $status, $overdraft) {
+    public function __construct($balance, OverdraftInterface $overdraft) {
         $this->balance = $balance;
         $this->overdraft = $overdraft;
         $this->openAccount();
@@ -33,11 +33,11 @@ class BankAccount implements BackAccountInterface
 
 
     public function transaction(BankTransactionInterface $transaction) { //le pasamos como parametro un obj DepositTransaction o WithdrawTransaction
-        $this->balance = $transaction->applyTransaction($this); //devuelve el balance final
+        $this->balance = $transaction->applyTransaction($this); // applyTransaction devuelve el balance final
     }
 
 
-    public function openAccount () {
+    public function openAccount () { //devuelve bool?
         $this->status = true;
     }
 
@@ -57,13 +57,11 @@ class BankAccount implements BackAccountInterface
         return $this->balance;
     }
  
-    // public function getOverdraft() {
-
-    // }
+    public function getOverdraft(): OverdraftInterface {
+        //return $this->overdraft->getOverdraftFundsAmount();
+        return $this->overdraft;
+    }
  
-    // public function getOverdraft(OverdraftInterface $overdraft) {
-
-    // }
  
     public function applyOverdraft(OverdraftInterface $overdraft) {
 

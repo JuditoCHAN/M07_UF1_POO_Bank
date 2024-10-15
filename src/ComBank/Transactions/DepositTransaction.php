@@ -16,14 +16,13 @@ use ComBank\Exceptions\ZeroAmountException;
 class DepositTransaction extends BaseTransaction implements BankTransactionInterface 
 {
 
-
     public function __construct($amount) {
         $this->amount = $amount;
     }
 
     public function applyTransaction(BackAccountInterface $bankAccount): float {
         try {
-            parent::validateAmount($this->amount);
+            parent::validateAmount($this->amount); //llamamos a la clase padre para usar el método validateAmount() del trait AmountValidation
             return $bankAccount->getBalance() + $this->amount;
         } catch (InvalidArgsException $e) { 
             throw $e;
