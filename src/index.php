@@ -25,8 +25,9 @@ pl('--------- [Start testing bank account #1, No overdraft] --------');
 try {
     
     // show balance account
-    $bankAccount1 = new BankAccount(200, new NoOverdraft()); //al crearla pone el atributo status a true (==open)
-    //echo "show balance account: " . $bankAccount1->getBalance();
+    $bankAccount1 = new BankAccount(200); //al crearla pone el status a STATUS_OPEN
+    //$bankAccount1->applyOverdraft(new NoOverdraft());
+    pl('Balance of my account: ' . $bankAccount1->getBalance());
 
 
     // close account

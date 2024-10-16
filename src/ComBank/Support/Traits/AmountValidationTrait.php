@@ -27,8 +27,8 @@ trait AmountValidationTrait
         }
 
         //si la cantidad es 0 lanzamos otra excepcion
-        if($amount == 0) {
-            throw new ZeroAmountException("The input was 0, which is not accepted");
+        if($amount <= 0) {
+            throw new ZeroAmountException("The amount was 0 or less than 0, which is not accepted");
         }
     }
 }

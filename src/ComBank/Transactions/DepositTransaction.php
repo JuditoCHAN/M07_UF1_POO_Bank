@@ -17,22 +17,23 @@ class DepositTransaction extends BaseTransaction implements BankTransactionInter
 {
 
     public function __construct($amount) {
+        parent::validateAmount($amount);
         $this->amount = $amount;
     }
 
     public function applyTransaction(BackAccountInterface $bankAccount): float {
-        try {
+        // try {
             parent::validateAmount($this->amount); //llamamos a la clase padre para usar el método validateAmount() del trait AmountValidation
             return $bankAccount->getBalance() + $this->amount;
-        } catch (InvalidArgsException $e) { 
-            throw $e;
-        } catch (ZeroAmountException $e) {
-            throw $e;
-        }
+        // } catch (InvalidArgsException $e) { 
+        //     throw $e;
+        // } catch (ZeroAmountException $e) {
+        //     throw $e;
+        // }
     }
 
     public function getTransactionInfo() {
-        return "Doing transaction deposit of " . $this->amount;
+        return 'DEPOSIT_TRANSACTION';
     }
 
     public function getAmount(): float {

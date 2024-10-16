@@ -17,46 +17,59 @@ use ComBank\Exceptions\InvalidOverdraftFundsException;
 use ComBank\OverdraftStrategy\Contracts\OverdraftInterface;
 use ComBank\Support\Traits\AmountValidationTrait;
 use ComBank\Transactions\Contracts\BankTransactionInterface;
+use PHPUnit\TextUI\XmlConfiguration\Validator;
 
 class BankAccount implements BackAccountInterface
 {
+    use AmountValidationTrait;
     private $balance;
     private $status;
     private $overdraft;
 
 
-    public function __construct($balance, OverdraftInterface $overdraft) {
+    public function __construct($balance) {
+        $this->validateAmount($balance); //si no lanza excepcion sigue
         $this->balance = $balance;
-        $this->overdraft = $overdraft;
-        $this->openAccount();
+        $this->status = BackAccountInterface::STATUS_OPEN;
+        $this->overdraft = new NoOverdraft();
     }
 
 
     public function transaction(BankTransactionInterface $transaction) { //le pasamos como parametro un obj DepositTransaction o WithdrawTransaction
-        $this->balance = $transaction->applyTransaction($this); // applyTransaction devuelve el balance final
+        if(!$this->openAccount()) {
+            throw new BankAccountException("You cannot perform a transaction in a closed account.");
+        } else {
+            $this->balance = $transaction->applyTransaction($this); // applyTransaction devuelve el balance final
+        }
     }
 
 
-    public function openAccount () { //devuelve bool?
-        $this->status = true;
+    //Comprueba que si la cuenta esta abierta o cerrada
+    public function openAccount () { 
+        return $this->status === BackAccountInterface::STATUS_OPEN;
     }
 
 
+    //if the account is already open, it should throw an exception
     public function reopenAccount () {
-        if(!$this->status) {
-            $this->status = true;
+        if($this->openAccount()) {
+            throw new BankAccountException("The account is already open. You cannot reope ");
+        } else {
+            $this->status = BackAccountInterface::STATUS_OPEN;
         }
     }
  
 
     public function closeAccount () {
-        $this->status = false;
+        $this->status = BackAccountInterface::STATUS_CLOSED;
     }
  
+
     public function getBalance (): float {
         return $this->balance;
     }
  
+
     public function getOverdraft(): OverdraftInterface {
         //return $this->overdraft->getOverdraftFundsAmount();
         return $this->overdraft;
@@ -64,9 +77,10 @@ class BankAccount implements BackAccountInterface
  
  
     public function applyOverdraft(OverdraftInterface $overdraft) {
-
+        $this->overdraft = $overdraft;
     }
  
+    
     public function setBalance($newBalance) {
         $this->balance = $newBalance;
     }

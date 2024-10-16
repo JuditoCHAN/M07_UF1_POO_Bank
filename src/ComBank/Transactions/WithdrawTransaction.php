@@ -38,7 +38,7 @@ class WithdrawTransaction extends BaseTransaction implements BankTransactionInte
                     }
                     
                 } else {
-                    throw new FailedTransactionException("This bank account doesn't have overdraft.");
+                    throw new FailedTransactionException("This bank account doesn't have an overdraft.");
                 }
             } else { //si la resta no sale negativa se puede hacer el withdraw
                 return $balanceTotal;
@@ -53,7 +53,7 @@ class WithdrawTransaction extends BaseTransaction implements BankTransactionInte
     }
 
     public function getTransactionInfo(): string {
-        return "Doing transaction withdrawal of " . $this->amount;
+        return 'WITHDRAW_TRANSACTION';
     }
 
     public function getAmount(): float {
