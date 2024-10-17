@@ -18,6 +18,7 @@ class WithdrawTransaction extends BaseTransaction implements BankTransactionInte
 {
 
     public function __construct($amount) {
+        parent::validateAmount($amount);
         $this->amount = $amount;
     }
 
@@ -38,7 +39,7 @@ class WithdrawTransaction extends BaseTransaction implements BankTransactionInte
                     }
                     
                 } else {
-                    throw new FailedTransactionException("This bank account doesn't have an overdraft.");
+                    throw new InvalidOverdraftFundsException("This bank account doesn't have an overdraft.");
                 }
             } else { //si la resta no sale negativa se puede hacer el withdraw
                 return $balanceTotal;

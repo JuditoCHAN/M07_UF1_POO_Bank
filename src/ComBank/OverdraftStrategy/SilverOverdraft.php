@@ -13,15 +13,12 @@
  * */
 class SilverOverdraft implements OverdraftInterface
 {
-    //private $overdraftAmount;
 
-    public function isGrantOverdraftFunds($overdraft = 100): bool {
-        //$this->overdraftAmount = $overdraft;
-        return true;
+    public function isGrantOverdraftFunds($newAmount): bool {
+        return abs($newAmount) <= 100 ? true : false; //abs para obtener el valor positivo si se pasa un núm negativo por parámetro
     }
 
     public function getOverdraftFundsAmount(): float {
-        //return $this->overdraftAmount;
         return 100.00;
     }
     

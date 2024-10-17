@@ -16,7 +16,7 @@ class NoOverdraftTest extends TestCase
      * @test;
      * @dataProvider newAmountsProvider
      * */
-    public function testOverdraft($newAmount,$expected){
+    public function testOverdraft($newAmount,$expected): void{
 
         //No overdraft grant 0.00 overdraft funds.
         $overdraft = new NoOverdraft();

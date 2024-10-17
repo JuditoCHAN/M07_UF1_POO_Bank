@@ -10,7 +10,7 @@
 interface OverdraftInterface
 {
 
-    public function isGrantOverdraftFunds($overdraft);
+    public function isGrantOverdraftFunds($newAmount);
 
     public function getOverdraftFundsAmount();
    
