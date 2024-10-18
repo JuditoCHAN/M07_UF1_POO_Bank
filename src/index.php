@@ -26,17 +26,18 @@ pl('--------- [Start testing bank account #1, No overdraft] --------');
 try {
     
     // show balance account
-    $bankAccount1 = new BankAccount(200); //al crearla pone el status a STATUS_OPEN
+    $bankAccount1 = new BankAccount(400); //al crearla pone el status a STATUS_OPEN
     //$bankAccount1->applyOverdraft(new NoOverdraft());
     pl('Balance of my account: ' . $bankAccount1->getBalance());
 
 
     // close account
     $bankAccount1->closeAccount();
-
+    pl('My account is now closed.');
 
     // reopen account
     $bankAccount1->reopenAccount();
+    pl('My account is now reopened.');
 
 
     // deposit +150 
@@ -116,8 +117,12 @@ try {
 }
 pl('My new balance after withdrawal (-20) with funds : ' . $bankAccount2->getBalance());
 
-try {
-   
+try { //intentar cerrar cuenta ya cerrada?
+   $bankAccount2->closeAccount();
+   pl('My account is now closed.');
+
+   $bankAccount2->closeAccount();
+
 } catch (BankAccountException $e) {
     pl($e->getMessage());
 }
