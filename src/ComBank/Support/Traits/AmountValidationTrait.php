@@ -19,11 +19,11 @@ trait AmountValidationTrait
      * @throws InvalidArgsException
      * @throws ZeroAmountException
      */
-    public function validateAmount(float $amount):void
+    public function validateAmount($amount):void
     {
         //si no es un numero lanzamos excepcion
         if(!is_numeric($amount)) { //comprueba si es un numero o un string numerico (ej: "32")
-            throw new InvalidArgsException("Only numbers are accepted. The input was " . $amount);
+            throw new InvalidArgsException("Only numbers are accepted. The input was '" . $amount . "'.");
         }
 
         //si la cantidad es 0 lanzamos otra excepcion

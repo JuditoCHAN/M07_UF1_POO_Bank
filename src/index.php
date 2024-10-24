@@ -13,6 +13,7 @@ use ComBank\Transactions\DepositTransaction;
 use ComBank\Transactions\WithdrawTransaction;
 use ComBank\Exceptions\BankAccountException;
 use ComBank\Exceptions\FailedTransactionException;
+use ComBank\Exceptions\InvalidArgsException;
 use ComBank\Exceptions\ZeroAmountException;
 use ComBank\OverdraftStrategy\NoOverdraft;
 use ComBank\Exceptions\InvalidOverdraftFundsException;
@@ -26,8 +27,7 @@ pl('--------- [Start testing bank account #1, No overdraft] --------');
 try {
     
     // show balance account
-    $bankAccount1 = new BankAccount(400); //al crearla pone el status a STATUS_OPEN
-    //$bankAccount1->applyOverdraft(new NoOverdraft());
+    $bankAccount1 = new BankAccount(400); //al crearla pone el status a STATUS_OPEN y el overdraft como NoOverdraft
     pl('Balance of my account: ' . $bankAccount1->getBalance());
 
 
@@ -64,10 +64,13 @@ try {
     pl($e->getMessage());
 } catch (InvalidOverdraftFundsException $e) { //añadido pq sino da error al lanzar esta excepcion en la linea 57
     pl($e->getMessage());
-} catch (FailedTransactionException $e) {
+} catch (InvalidArgsException $e) { //añadido por si se crea cuenta (o se hace transaccion) con argumento no valido
+    pl($e->getMessage());
+}  catch (FailedTransactionException $e) {
     pl('Error transaction: ' . $e->getMessage());
+    pl('My balance after failed last transaction : ' . $bankAccount1->getBalance());
 }
-pl('My balance after failed last transaction : ' . $bankAccount1->getBalance());
+
 
 
 
@@ -105,24 +108,28 @@ try {
     
 } catch (FailedTransactionException $e) {
     pl('Error transaction: ' . $e->getMessage());
-}
-pl('My balance after failed last transaction : ' . $bankAccount2->getBalance());
-
-try {
-    pl('Doing transaction withdrawal (-20) with current balance : ' . $bankAccount2->getBalance());
-    $bankAccount2->transaction(new WithdrawTransaction(20));
-    
-} catch (FailedTransactionException $e) {
-    pl('Error transaction: ' . $e->getMessage());
-}
-pl('My new balance after withdrawal (-20) with funds : ' . $bankAccount2->getBalance());
-
-try { //intentar cerrar cuenta ya cerrada?
-   $bankAccount2->closeAccount();
-   pl('My account is now closed.');
-
-   $bankAccount2->closeAccount();
-
-} catch (BankAccountException $e) {
+} catch (ZeroAmountException $e) {
     pl($e->getMessage());
+} catch (InvalidArgsException $e) {
+    pl($e->getMessage());
+}
+
+
+if(isset($bankAccount2)) { //para comprobar si se ha creado cuenta (en caso de haberla intentado crear antes con parametro no valido no se habrá creado)
+    try {
+        pl('Doing transaction withdrawal (-20) with current balance : ' . 
+        $bankAccount2->getBalance());
+        $bankAccount2->transaction(new WithdrawTransaction(20));
+        
+        pl('My new balance after withdrawal (-20) with funds : ' . $bankAccount2->getBalance());
+
+        $bankAccount2->closeAccount();  //intentar cerrar cuenta ya cerrada, salta error
+        pl('My account is now closed.');
+
+        $bankAccount2->closeAccount();
+    } catch (FailedTransactionException $e) {
+        pl('Error transaction: ' . $e->getMessage());
+    } catch (BankAccountException $e) {
+        pl($e->getMessage());
+    }
 }
