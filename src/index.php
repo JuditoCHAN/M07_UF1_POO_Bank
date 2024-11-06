@@ -8,6 +8,8 @@
  */
 
 use ComBank\Bank\BankAccount;
+use ComBank\Bank\InternationalBankAccount;
+use ComBank\Bank\NationalBankAccount;
 use ComBank\OverdraftStrategy\SilverOverdraft;
 use ComBank\Transactions\DepositTransaction;
 use ComBank\Transactions\WithdrawTransaction;
@@ -76,6 +78,7 @@ try {
 
 
 //---[Bank account 2]---/
+echo "<br><br>";
 pl('--------- [Start testing bank account #2, Silver overdraft (100.0 funds)] --------');
 try {
     
@@ -133,3 +136,16 @@ if(isset($bankAccount2)) { //para comprobar si se ha creado cuenta (en caso de h
         pl($e->getMessage());
     }
 }
+
+
+//---[Start testing national bankaccount (No conversion)]---/
+echo "<br><br>";
+
+$nationalBankAccount1 = new NationalBankAccount(500);
+pl("My balance: " . $nationalBankAccount1->getBalance() . " € (Euros)");
+
+
+//---[Start testing national bankaccount (Dollar conversion)]---/
+$internationalBankAccount1 = new InternationalBankAccount(300);
+pl("My balance: " . $internationalBankAccount1->getBalance() . " € (Euros)");
+pl($internationalBankAccount1->getConvertedCurrency());
