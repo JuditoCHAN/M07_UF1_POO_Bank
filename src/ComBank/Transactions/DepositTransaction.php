@@ -8,6 +8,7 @@
  */
 
 use ComBank\Bank\Contracts\BackAccountInterface;
+use ComBank\Exceptions\FailedTransactionException;
 use ComBank\Support\Traits\AmountValidationTrait;
 use ComBank\Transactions\Contracts\BankTransactionInterface;
 use ComBank\Exceptions\InvalidArgsException;
@@ -17,22 +18,20 @@ class DepositTransaction extends BaseTransaction implements BankTransactionInter
 {
 
     public function __construct($amount) {
-        parent::validateAmount($amount);
+        parent::validateAmount($amount);//llamamos a la clase padre para usar el método validateAmount() del trait AmountValidation
         $this->amount = $amount;
     }
 
     public function applyTransaction(BackAccountInterface $bankAccount): float {
-        parent::validateAmount($this->amount); //llamamos a la clase padre para usar el método validateAmount() del trait AmountValidation
-        return $bankAccount->getBalance() + $this->amount;
+        if(parent::detectFraud($this)) {
+            throw new FailedTransactionException("Deposit blocked due to possible fraud. Risk score is above 75.");
+        } else {
+            return $bankAccount->getBalance() + $this->amount;
+        }  
     }
 
     public function getTransactionInfo() {
         return 'DEPOSIT_TRANSACTION';
     }
-
-    public function getAmount(): float {
-        return $this->amount;
-    }
-
    
 }

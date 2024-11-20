@@ -12,6 +12,9 @@ use ComBank\Exceptions\InvalidOverdraftFundsException;
 
 interface BankTransactionInterface
 {
+    const BLOCKED = 'TRANSACTION_BLOCKED';
+    const ALLOWED = 'TRANSACTION_ALLOWED';
+
     public function applyTransaction(BackAccountInterface $bankAccount);
 
     public function getTransactionInfo();

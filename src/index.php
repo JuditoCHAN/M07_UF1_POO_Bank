@@ -10,6 +10,7 @@
 use ComBank\Bank\BankAccount;
 use ComBank\Bank\InternationalBankAccount;
 use ComBank\Bank\NationalBankAccount;
+use ComBank\Bank\Person;
 use ComBank\OverdraftStrategy\SilverOverdraft;
 use ComBank\Transactions\DepositTransaction;
 use ComBank\Transactions\WithdrawTransaction;
@@ -138,14 +139,124 @@ if(isset($bankAccount2)) { //para comprobar si se ha creado cuenta (en caso de h
 }
 
 
-//---[Start testing national bankaccount (No conversion)]---/
+
+
+//----------------------------------TESTING NATIONAL AND INTERNATIONAL ACCOUNTS-----------------
 echo "<br><br>";
+pl('--------- [Start testing national account (No conversion)] --------');
 
 $nationalBankAccount1 = new NationalBankAccount(500);
-pl("My balance: " . $nationalBankAccount1->getBalance() . " € (Euros)");
+pl("My balance: " . $nationalBankAccount1->getBalance() . $nationalBankAccount1->getCurrency());
 
 
-//---[Start testing national bankaccount (Dollar conversion)]---/
-$internationalBankAccount1 = new InternationalBankAccount(300);
-pl("My balance: " . $internationalBankAccount1->getBalance() . " € (Euros)");
-pl($internationalBankAccount1->getConvertedCurrency());
+//----------------------------------TESTING CURRENCY CONVERSION----------------------------------
+echo "<br><br>";
+pl('--------- [Start testing international account (Dollar conversion)] --------');
+
+$p = new Person("Joe Doe", 111999900002222, "john_doe@gmail.com");
+$internationalBankAccount1 = new InternationalBankAccount(310);
+
+pl("My balance: " . $internationalBankAccount1->getBalance() . $internationalBankAccount1->getCurrency());
+
+try {
+    pl("My balance: " . $internationalBankAccount1->getConvertedBalance() . $internationalBankAccount1->getConvertedCurrency());
+} catch(Exception $e) {
+    pl('Error: ' . $e->getMessage());
+}
+
+
+
+
+//----------------------------------TESTING EMAIL VALIDATION----------------------------------
+echo "<br><br>";
+pl('--------- [Start testing national account with VALID EMAIL] --------');
+
+$newHolder = new Person("Juan Ortega", "4546777723321111", "juan1995@gmail.com");
+
+$nationalBankAccount1->setHolder($newHolder);
+
+pl('Validating email: ' . $nationalBankAccount1->getHolder()->getEmail());
+
+// try {
+//     $emailValidation = $nationalBankAccount1->getHolder()->getEmailValidation();
+//     pl($emailValidation);
+// } catch (Exception $e) {
+//     pl('Error: ' . $e->getMessage());
+// }
+
+
+echo "<br><br>";
+pl('--------- [Start testing international account with INVALID EMAIL] --------');
+
+$internationalBankAccount1->setHolder(new Person("Carla Sanchez", "1000200030004000", "carla.san@gmial.com"));
+
+pl('Validating email: ' . $internationalBankAccount1->getHolder()->getEmail());
+
+// try {
+//     sleep(1); //la API solo permite 1 petición/segundo
+//     $emailValidationFail = $internationalBankAccount1->getHolder()->getEmailValidation();
+//     pl($emailValidationFail);
+// } catch(Exception $e) {
+//     pl('Error: ' . $e->getMessage());
+// }
+
+
+
+
+
+//----------------------------------TESTING FRAUD DETECTION----------------------------------
+echo "<br><br>";
+pl('--------- [Start testing FRAUD DETECTION IN TRANSACTIONS] --------');
+pl('--------- [Allowing DEPOSIT] --------');
+try {
+    $nationalBankAccount2 = new NationalBankAccount(400);
+    pl('Balance of my account: ' . $nationalBankAccount2->getBalance());
+
+    pl('Doing transaction deposit (+5000) with current balance ' . $nationalBankAccount2->getBalance());
+    $nationalBankAccount2->transaction(new DepositTransaction(5000));
+
+    pl('My new balance after deposit (+5000) : ' . $nationalBankAccount2->getBalance());
+} catch(Exception $e) {
+    pl($e->getMessage());
+}
+
+echo "<br><br>";
+pl('--------- [Blocking DEPOSIT] --------');
+try {
+    pl('Balance of my account: ' . $nationalBankAccount2->getBalance());
+
+    pl('Doing transaction deposit (+30000) with current balance ' . $nationalBankAccount2->getBalance());
+    $nationalBankAccount2->transaction(new DepositTransaction(30000));
+
+    pl('My new balance after deposit (+30000) : ' . $nationalBankAccount2->getBalance());
+} catch(Exception $e) {
+    pl($e->getMessage());
+}
+
+
+echo "<br><br>";
+pl('--------- [Allowing WITHDRAWAL] --------');
+try {
+    $internationalBankAccount2 = new NationalBankAccount(10000);
+    pl('Balance of my account: ' . $internationalBankAccount2->getBalance());
+
+    pl('Doing transaction withdrawal (-1200) with current balance ' . $internationalBankAccount2->getBalance());
+    $internationalBankAccount2->transaction(new WithdrawTransaction(1200));
+
+    pl('My new balance after withdraw (-1200) : ' . $internationalBankAccount2->getBalance());
+} catch(Exception $e) {
+    pl($e->getMessage());
+}
+
+echo "<br><br>";
+pl('--------- [Blocking WITHDRAWAL] --------');
+try {
+    pl('Balance of my account: ' . $internationalBankAccount2->getBalance());
+
+    pl('Doing transaction withdrawal (-5000) with current balance ' . $internationalBankAccount2->getBalance());
+    $internationalBankAccount2->transaction(new WithdrawTransaction(5000));
+
+    pl('My new balance after withdraw (-5000) : ' . $internationalBankAccount2->getBalance());
+} catch(Exception $e) {
+    pl($e->getMessage());
+}

@@ -14,8 +14,11 @@ use ComBank\Support\Traits\ApiTrait;
 
 abstract class BaseTransaction
 {
-    use AmountValidationTrait;
+    use AmountValidationTrait, ApiTrait;
 
-    use ApiTrait;
     protected $amount;
+
+    public function getAmount(): float {
+        return $this->amount;
+    }
 }
