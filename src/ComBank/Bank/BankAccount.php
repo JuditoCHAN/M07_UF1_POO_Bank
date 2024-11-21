@@ -38,7 +38,7 @@ class BankAccount implements BackAccountInterface
         $this->status = BackAccountInterface::STATUS_OPEN;
         $this->overdraft = new NoOverdraft();
         $this->currency = " € (EUR)";
-        $this->holder = new Person("DefaultUser", "1111222233334444", "defaultuser@gmail.com"); //persona por defecto, en index.php se hace setPersona
+        $this->holder = new Person("DefaultUser", "1111222233334444"); //persona por defecto, en index.php se hace setPersona
     }
 
 
