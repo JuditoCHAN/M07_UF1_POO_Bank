@@ -38,7 +38,7 @@ trait ApiTrait {
 
             //json_decode devuelve null si hay algun error
             if($result != null) {
-                var_dump($result);
+                //var_dump($result);
                 return ($result["deliverability"] == "DELIVERABLE") ? true : false;
             } else {
                 throw new EmailValidationException("Error al decodificar el JSON al hacer la petición a la API para validar email");
@@ -131,7 +131,7 @@ trait ApiTrait {
     }
 
 
-    
+
     public function validatePhone(String $phoneNumber): bool {
         if(is_numeric($phoneNumber)) {
             $curl = curl_init();

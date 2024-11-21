@@ -174,11 +174,11 @@ $newHolder = new Person("Juan Ortega", "4546777723321111");
 $nationalBankAccount1->setHolder($newHolder);
 $newEmail = "juan1995@gmail.com";
 
-// try {
-//     pl("Validating email $newEmail: " . $nationalBankAccount1->getHolder()->setEmail($newEmail));
-// } catch (Exception $e) {
-//     pl('Error: ' . $e->getMessage());
-// }
+try {
+    pl("Validating email $newEmail: " . $nationalBankAccount1->getHolder()->setEmail($newEmail));
+} catch (Exception $e) {
+    pl('Error: ' . $e->getMessage());
+}
 
 
 echo "<br><br>";
@@ -187,12 +187,12 @@ pl('--------- [Start testing international account with INVALID EMAIL] --------'
 $internationalBankAccount1->setHolder(new Person("Carla Sanchez", "1000200030004000"));
 $newEmail2 =  "carlasanchez@gmial.com";
 
-// try {
-//     sleep(1); //la API solo permite 1 petición/segundo
-//     pl("Validating email $newEmail2: " . $internationalBankAccount1->getHolder()->setEmail($newEmail2));
-// } catch(Exception $e) {
-//     pl('Error: ' . $e->getMessage());
-// }
+try {
+    sleep(1); //la API solo permite 1 petición/segundo
+    pl("Validating email $newEmail2: " . $internationalBankAccount1->getHolder()->setEmail($newEmail2));
+} catch(Exception $e) {
+    pl('Error: ' . $e->getMessage());
+}
 
 
 
