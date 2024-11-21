@@ -10,23 +10,32 @@ class Person {
     private $name;
     private $idCard;
     private $email;
+    private $phone;
 
-    public function __construct($name, $idCard, $email) {
+    public function __construct($name, $idCard) {
         // if(!$this->validateEmail($email)) {
         //     throw new EmailValidationException("Invalid email address: " . $email);
         // } else {
             $this->name = $name;
             $this->idCard = $idCard;
-            $this->email =$email;
         //}
     }
 
 
-    public function getEmailValidation() {
-        if($this->validateEmail($this->email)) {
+    public function setEmail($email) {
+        if($this->validateEmail($email)) {
             return "Email is valid.";
         } else {
             return "Invalid email address.";
+        }
+    }
+
+
+    public function setPhone($phone) {
+        if($this->validatePhone($phone)) {
+            return "Phone is valid.";
+        } else {
+            return "Invalid phone.";
         }
     }
 
@@ -47,12 +56,12 @@ class Person {
         return $this->idCard;
     }
 
-    public function setEmail($email) {
-        $this->email = $email;
-    }
-
     public function getEmail() {
         return $this->email;
+    }
+
+    public function getPhone() {
+        return $this->phone;
     }
 
 }

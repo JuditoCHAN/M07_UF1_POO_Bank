@@ -153,7 +153,6 @@ pl("My balance: " . $nationalBankAccount1->getBalance() . $nationalBankAccount1-
 echo "<br><br>";
 pl('--------- [Start testing international account (Dollar conversion)] --------');
 
-$p = new Person("Joe Doe", 111999900002222, "john_doe@gmail.com");
 $internationalBankAccount1 = new InternationalBankAccount(310);
 
 pl("My balance: " . $internationalBankAccount1->getBalance() . $internationalBankAccount1->getCurrency());
@@ -171,15 +170,12 @@ try {
 echo "<br><br>";
 pl('--------- [Start testing national account with VALID EMAIL] --------');
 
-$newHolder = new Person("Juan Ortega", "4546777723321111", "juan1995@gmail.com");
-
+$newHolder = new Person("Juan Ortega", "4546777723321111");
 $nationalBankAccount1->setHolder($newHolder);
-
-pl('Validating email: ' . $nationalBankAccount1->getHolder()->getEmail());
+$newEmail = "juan1995@gmail.com";
 
 // try {
-//     $emailValidation = $nationalBankAccount1->getHolder()->getEmailValidation();
-//     pl($emailValidation);
+//     pl("Validating email $newEmail: " . $nationalBankAccount1->getHolder()->setEmail($newEmail));
 // } catch (Exception $e) {
 //     pl('Error: ' . $e->getMessage());
 // }
@@ -188,14 +184,12 @@ pl('Validating email: ' . $nationalBankAccount1->getHolder()->getEmail());
 echo "<br><br>";
 pl('--------- [Start testing international account with INVALID EMAIL] --------');
 
-$internationalBankAccount1->setHolder(new Person("Carla Sanchez", "1000200030004000", "carla.san@gmial.com"));
-
-pl('Validating email: ' . $internationalBankAccount1->getHolder()->getEmail());
+$internationalBankAccount1->setHolder(new Person("Carla Sanchez", "1000200030004000"));
+$newEmail2 =  "carlasanchez@gmial.com";
 
 // try {
 //     sleep(1); //la API solo permite 1 petición/segundo
-//     $emailValidationFail = $internationalBankAccount1->getHolder()->getEmailValidation();
-//     pl($emailValidationFail);
+//     pl("Validating email $newEmail2: " . $internationalBankAccount1->getHolder()->setEmail($newEmail2));
 // } catch(Exception $e) {
 //     pl('Error: ' . $e->getMessage());
 // }
@@ -259,4 +253,34 @@ try {
     pl('My new balance after withdraw (-5000) : ' . $internationalBankAccount2->getBalance());
 } catch(Exception $e) {
     pl($e->getMessage());
+}
+
+
+
+//----------------------------------TESTING PHONE VALIDATION----------------------------------
+echo "<br><br>";
+pl('--------- [Start testing national account with VALID PHONE] --------');
+
+$nationalBankAccount3 = new NationalBankAccount(2000);
+$nationalBankAccount3->setHolder(new Person("Pepa Ortiz", "8888777723321111"));
+$phoneNumber1 = "659224903";
+
+try {
+    pl("Validating phone $phoneNumber1: " . $nationalBankAccount3->getHolder()->setPhone($phoneNumber1));
+} catch (Exception $e) {
+    pl('Error: ' . $e->getMessage());
+}
+
+
+echo "<br><br>";
+pl('--------- [Start testing international account with INVALID PHONE] --------');
+$internationalBankAccount3 = new InternationalBankAccount(5200);
+$internationalBankAccount3->setHolder(new Person("John Smith", "1000200030009000"));
+$phoneNumber2 = "5898901190097764654";
+
+try {
+    sleep(1); //la API solo permite 1 petición/segundo
+    pl("Validating phone $phoneNumber2: " . $internationalBankAccount3->getHolder()->setPhone($phoneNumber2));
+} catch(Exception $e) {
+    pl('Error: ' . $e->getMessage());
 }

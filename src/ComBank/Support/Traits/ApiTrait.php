@@ -2,9 +2,11 @@
 
 use ComBank\Exceptions\EmailValidationException;
 use ComBank\Exceptions\FraudDetectionException;
+use ComBank\Exceptions\PhoneValidationException;
 use ComBank\Transactions\Contracts\BankTransactionInterface;
 use ComBank\Transactions\WithdrawTransaction;
 use ComBank\Exceptions\InternationalBankAccountException;
+
 
 trait ApiTrait {
 
@@ -36,6 +38,7 @@ trait ApiTrait {
 
             //json_decode devuelve null si hay algun error
             if($result != null) {
+                var_dump($result);
                 return ($result["deliverability"] == "DELIVERABLE") ? true : false;
             } else {
                 throw new EmailValidationException("Error al decodificar el JSON al hacer la petición a la API para validar email");
@@ -58,7 +61,11 @@ trait ApiTrait {
         curl_setopt($ch, CURLOPT_URL, $api);
         curl_setopt_array($ch, array(
             CURLOPT_RETURNTRANSFER => true, //lo devuelve como un string
-            CURLOPT_HTTPHEADER => array("Your access token"),
+            CURLOPT_HTTPHEADER => array(
+                // "Authorization: Bearer $accesToken", //HEader de autorización con el token
+                "Content-Type: application/json", //el contenido enviado es JSON
+                "Accept: application/json" //se espera JSON en la respuesta
+            ),
             CURLOPT_SSL_VERIFYPEER => false
         ));
 
@@ -120,6 +127,51 @@ trait ApiTrait {
             curl_close($curl);
 
             throw new FraudDetectionException("Error al realizar la petición a la API de detección de fraude: " . $error);
+        }
+    }
+
+
+    
+    public function validatePhone(String $phoneNumber): bool {
+        if(is_numeric($phoneNumber)) {
+            $curl = curl_init();
+
+            curl_setopt_array($curl, [
+                CURLOPT_URL => "https://phonevalidation.abstractapi.com/v1/?api_key=89be84e2d70c47c4901c8cc7afdd00f4&phone=$phoneNumber&country=ES",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "GET",
+                CURLOPT_SSL_VERIFYPEER => false, //para que me deje hacer peticion
+                CURLOPT_SSL_VERIFYHOST => false //sino da error por certificado SSL
+            ]);
+
+            $response = curl_exec($curl);
+            $err = curl_error($curl); //devuelve "" si no hay error
+
+            curl_close($curl);
+
+            if ($err) {
+                throw new PhoneValidationException("Error: " . $err);
+            } else {
+                $result = json_decode($response, true);
+
+                if($result != null) {
+                    try {
+                        //var_dump($result);
+                        return ($result["valid"] == "true") ? true : false; 
+                        
+                    } catch(\Exception $e) {
+                        throw new PhoneValidationException("Error al acceder al JSON decodificado.");
+                    }
+                } else {
+                    throw new PhoneValidationException("Error al decodificar el JSON al hacer la petición a la API para validar el telefono");
+                }
+            }
+        } else {
+            throw new PhoneValidationException("Debes pasar un número de teléfono correcto (solo numeros).");
         }
     }
 }
